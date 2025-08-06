@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: b101726490f73449cbbb4d3d3ba45e46
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 25800000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 135922
+  packageName: Camera Multi Target Dynamic
+  packageVersion: 1.1
+  assetPath: Assets/CameraMultiTarget/Example/Example/LightingData.asset
+  uploadId: 737680
