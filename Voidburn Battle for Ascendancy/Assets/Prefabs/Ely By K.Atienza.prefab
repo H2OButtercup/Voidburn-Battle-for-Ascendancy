@@ -1793,11 +1793,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8431687675945969230}
-  - component: {fileID: 4477361842035041750}
   - component: {fileID: 7094772783124928087}
+  - component: {fileID: 4796771691749367043}
   m_Layer: 0
   m_Name: Ely By K.Atienza
-  m_TagString: Player2
+  m_TagString: Player1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1819,52 +1819,6 @@ Transform:
   - {fileID: 3575500321886424758}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4477361842035041750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7083659113035505733}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5fa258bb29bebb24d83bee431674f83c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controller: {fileID: 7094772783124928087}
-  ignoreLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  orientation: {fileID: 8431687675945969230}
-  wallLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  animator: {fileID: 0}
-  HPOrig: 6
-  speed: 5
-  sprintMod: 0
-  jumpVel: 2
-  jumpMax: 1
-  gravity: 0
-  deathDepth: 0
-  mouseSensitivity: 3
-  staminaOrig: 50
-  stamina: 0
-  staminaRegenRate: 0
-  sprintStaminaCost: 2
-  playerSounds: {fileID: 0}
-  playerSoundsClip: []
-  audJumpVol: 0
-  deathClip: []
-  deathVolume: 0
-  playerHurtClip: []
-  hurtVol: 0
-  playerReloadClip: []
-  reloadVol: 0
-  audStep: []
-  audStepVol: 0
-  audArena: []
-  audArenaVol: 0
 --- !u!143 &7094772783124928087
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1890,6 +1844,24 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!114 &4796771691749367043
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083659113035505733}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fa258bb29bebb24d83bee431674f83c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  opponent: {fileID: 0}
+  animator: {fileID: 0}
+  doubleTapThreshold: 0.3
+  sideStepDistance: 2
+  sideStepSpeed: 10
 --- !u!1 &7222792387283301895
 GameObject:
   m_ObjectHideFlags: 0
