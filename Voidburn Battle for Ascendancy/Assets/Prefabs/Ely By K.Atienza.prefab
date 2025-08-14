@@ -1794,7 +1794,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8431687675945969230}
   - component: {fileID: 7094772783124928087}
-  - component: {fileID: 4796771691749367043}
+  - component: {fileID: 6865230798340881654}
+  - component: {fileID: 2118820577929135122}
   m_Layer: 0
   m_Name: Ely By K.Atienza
   m_TagString: Player1
@@ -1844,7 +1845,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &4796771691749367043
+--- !u!114 &6865230798340881654
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1856,12 +1857,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa258bb29bebb24d83bee431674f83c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
   opponent: {fileID: 0}
-  animator: {fileID: 0}
-  doubleTapThreshold: 0.3
-  sideStepDistance: 2
-  sideStepSpeed: 10
+  controller: {fileID: 7094772783124928087}
+  animator: {fileID: 2118820577929135122}
+  moveSpeed: 5
+  sidestepDistance: 2
+  jumpForce: 5
+  tapThreshold: 0.3
+--- !u!95 &2118820577929135122
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7083659113035505733}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: a6a7eb2574f48ba4fb77d0af2ab26b31, type: 3}
+  m_Controller: {fileID: 9100000, guid: 73650af98dcec5a48a18c26fbe7df3ab, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7222792387283301895
 GameObject:
   m_ObjectHideFlags: 0
