@@ -3,131 +3,193 @@ using UnityEngine.InputSystem;
 
 public class playerController : MonoBehaviour
 {
-    [Header("Movement")]
-    [SerializeField] float moveSpeed = 5f;
-    [SerializeField] Transform opponent;
-    [SerializeField] Animator animator;
-    [SerializeField] float doubleTapThreshold = 0.3f;
-    [SerializeField] float sideStepDistance = 2f;
-    [SerializeField] float sideStepSpeed = 10f;
+    [Header("Movement Settings")]
+    public float moveSpeed = 5f;
+    public float jumpForce = 7f;
+    public float sideStepDistance = 2f;
+    public float rotationSpeed = 5f;
+    public float tapThreshold = 0.3f;
 
-    private float lastLeftTapTime = -1f;
-    private float lastRightTapTime = -1f;
-    private bool isSideStepping = false;
-    private Vector3 sideStepTarget;
+    [Header("References")]
+    public Transform opponent;
+    public Animator animator;
+
     private PlayerControls controls;
     private Vector2 moveInput;
-    private bool isJumpPressed;
-    private bool isAttackPressed;
+    private bool isGrounded = true;
+    private bool isSideStepping = false;
 
-    private CharacterController controller;
+    private float verticalVelocity = 0f;
+    private float lastVerticalTapTime = -1f;
+    private int verticalTapCount = 0;
 
-    void Awake()
+    private void Awake()
     {
-        controller = GetComponent<CharacterController>();
         controls = new PlayerControls();
-
-        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
-
-        controls.Player.Jump.performed += ctx => isJumpPressed = true;
-        controls.Player.Jump.canceled += ctx => isJumpPressed = false;
-
-        controls.Player.Attack.performed += ctx => isAttackPressed = true;
-        controls.Player.Attack.canceled += ctx => isAttackPressed = false;
     }
 
-    void OnEnable() => controls.Player.Enable();
-    void OnDisable() => controls.Player.Disable();
-
-    void Update()
+    private void OnEnable()
     {
-        FaceOpponent();
+        controls.Enable();
+        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+        controls.Player.Jump.performed += ctx => TryJump();
+        controls.Player.Crouch.performed += ctx => TryCrouch();
+    }
+
+    private void OnDisable()
+    {
+        controls.Player.Move.performed -= ctx => moveInput = ctx.ReadValue<Vector2>();
+        controls.Player.Move.canceled -= ctx => moveInput = Vector2.zero;
+        controls.Player.Jump.performed -= ctx => TryJump();
+        controls.Player.Crouch.performed -= ctx => TryCrouch();
+        controls.Disable();
+    }
+
+    private void Update()
+    {
+        CheckGrounded();
         HandleMovement();
-        HandleJump();
-        HandleAttack();
+        HandleFacing();
+        HandleVerticalInput(moveInput.y);
+        ApplyGravity();
+    }
 
-        void DetectDoubleTap()
+    private void HandleMovement()
+    {
+        if (opponent == null || isSideStepping) return;
+
+        Vector3 toOpponent = (opponent.position - transform.position).normalized;
+        Vector3 moveDirection = toOpponent * moveInput.x; // Left/Right input = toward/away
+
+        moveDirection.y = 0f;
+        Vector3 move = moveDirection * moveSpeed * Time.deltaTime;
+        transform.position += move;
+
+        bool walkingForward = moveInput.x > 0.1f;
+        bool walkingBackward = moveInput.x < -0.1f;
+
+        animator.SetBool("IsWalkingForward", walkingForward);
+        animator.SetBool("IsWalkingBackward", walkingBackward);
+    }
+
+    private void HandleFacing()
+    {
+        if (isGrounded && !isSideStepping && opponent != null)
         {
-            Vector3 toOpponent = opponent.position - transform.position;
-            Vector3 fightRight = Vector3.Cross(Vector3.up, toOpponent).normalized;
+            Vector3 direction = opponent.position - transform.position;
+            direction.y = 0;
 
-            if (moveInput.x < -0.5f)
-            {
-                if (Time.time - lastLeftTapTime < doubleTapThreshold)
-                    TriggerSideStep(-fightRight); // Side step left
-                lastLeftTapTime = Time.time;
-            }
-            else if (moveInput.x > 0.5f)
-            {
-                if (Time.time - lastRightTapTime < doubleTapThreshold)
-                    TriggerSideStep(fightRight); // Side step right
-                lastRightTapTime = Time.time;
-            }
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
+    }
 
-        if (isSideStepping)
+    private void HandleVerticalInput(float vertical)
+    {
+        if (Mathf.Abs(vertical) < 0.8f) return;
+
+        if (Time.time - lastVerticalTapTime < tapThreshold)
         {
-            Vector3 move = (sideStepTarget - transform.position).normalized * sideStepSpeed * Time.deltaTime;
-            controller.Move(move);
-
-            if (Vector3.Distance(transform.position, sideStepTarget) < 0.1f)
-            {
-                isSideStepping = false;
-            }
+            verticalTapCount++;
         }
         else
         {
-            DetectDoubleTap(); // Only detect taps when not side stepping
-            HandleMovement();  // Regular movement
+            verticalTapCount = 1;
         }
-    }
 
-    void FaceOpponent()
-    {
-        if (opponent == null) return;
+        lastVerticalTapTime = Time.time;
 
-        Vector3 direction = opponent.position - transform.position;
-        direction.y = 0;
-        transform.rotation = Quaternion.LookRotation(direction);
-    }
-
-    void HandleMovement()
-    {
-        Vector3 toOpponent = opponent.position - transform.position;
-        toOpponent.y = 0;
-        Vector3 fightRight = Vector3.Cross(Vector3.up, toOpponent).normalized;
-
-        Vector3 move = fightRight * moveInput.x * moveSpeed * Time.deltaTime;
-        controller.Move(move);
-
-        animator.SetFloat("MoveSpeed", Mathf.Abs(moveInput.x));
-    }
-
-    void HandleJump()
-    {
-        if (isJumpPressed)
+        if (verticalTapCount == 2)
         {
-            animator.SetTrigger("Jump");
-            isJumpPressed = false;
-        }
-    }
+            if (vertical > 0)
+                TriggerSidestepOut(); // Double tap up
+            else
+                TriggerSidestepIn();  // Double tap down
 
-    void HandleAttack()
-    {
-        if (isAttackPressed)
+            verticalTapCount = 0;
+        }
+        else
         {
-            animator.SetTrigger("Attack");
-            isAttackPressed = false;
+            if (vertical > 0)
+                TryJump();       // Single tap up
+            else
+                TryCrouch();     // Single tap down
         }
     }
 
-    void TriggerSideStep(Vector3 direction)
+    private void TryJump()
     {
-        if (isSideStepping) return;
+        if (!isGrounded) return;
+
+        verticalVelocity = jumpForce;
+        animator.SetTrigger("Jump");
+        isGrounded = false;
+    }
+
+    private void TryCrouch()
+    {
+        if (!isGrounded) return;
+
+        animator.SetTrigger("Crouch");
+    }
+
+    private void TriggerSidestepIn()
+    {
+        if (!isGrounded || opponent == null) return;
 
         isSideStepping = true;
-        sideStepTarget = transform.position + direction * sideStepDistance;
-        animator.SetTrigger("SideStep");
+
+        Vector3 toOpponent = (opponent.position - transform.position).normalized;
+        Vector3 side = Vector3.Cross(Vector3.up, toOpponent).normalized;
+
+        Vector3 step = -side * sideStepDistance;
+        transform.position += step;
+
+        animator.SetTrigger("SidestepLeft");
+        Invoke(nameof(ResetSideStep), 0.3f);
+    }
+
+    private void TriggerSidestepOut()
+    {
+        if (!isGrounded || opponent == null) return;
+
+        isSideStepping = true;
+
+        Vector3 toOpponent = (opponent.position - transform.position).normalized;
+        Vector3 side = Vector3.Cross(Vector3.up, toOpponent).normalized;
+
+        Vector3 step = side * sideStepDistance;
+        transform.position += step;
+
+        animator.SetTrigger("SidestepRight");
+        Invoke(nameof(ResetSideStep), 0.3f);
+    }
+
+    private void ResetSideStep()
+    {
+        isSideStepping = false;
+    }
+
+    private void ApplyGravity()
+    {
+        if (isGrounded && verticalVelocity < 0)
+        {
+            verticalVelocity = -2f;
+            animator.SetTrigger("Land");
+        }
+        else
+        {
+            verticalVelocity += Physics.gravity.y * Time.deltaTime;
+            transform.position += new Vector3(0, verticalVelocity * Time.deltaTime, 0);
+        }
+    }
+
+    private void CheckGrounded()
+    {
+        float rayLength = 0.2f;
+        Vector3 origin = transform.position + Vector3.up * 0.1f;
+
+        isGrounded = Physics.Raycast(origin, Vector3.down, rayLength);
     }
 }
