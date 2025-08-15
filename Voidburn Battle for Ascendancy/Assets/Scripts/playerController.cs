@@ -66,7 +66,11 @@ public class playerController : MonoBehaviour
         Vector3 move = moveDirection * moveSpeed * Time.deltaTime;
         transform.position += move;
 
-        animator.SetFloat("MoveSpeed", Mathf.Abs(moveInput.x));
+        bool walkingForward = moveInput.x > 0.1f;
+        bool walkingBackward = moveInput.x < -0.1f;
+
+        animator.SetBool("IsWalkingForward", walkingForward);
+        animator.SetBool("IsWalkingBackward", walkingBackward);
     }
 
     private void HandleFacing()
