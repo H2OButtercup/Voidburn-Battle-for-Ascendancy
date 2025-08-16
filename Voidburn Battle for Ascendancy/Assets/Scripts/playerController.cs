@@ -358,13 +358,13 @@ public class playerController : MonoBehaviour
     {
         Hp -= damage;
     }
-    public bool groundedCheck()
-    {
-        if (isGrounded)
-            return true;
-        else return false;
+    //public bool groundedCheck()
+    //{
+    //    if (isGrounded)
+    //        return true;
+    //    else return false;
 
-    }
+    //}
 
 
 }

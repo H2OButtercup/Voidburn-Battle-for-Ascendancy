@@ -20,19 +20,19 @@ public class Platform : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        foreach(var playerCollider in playersOn)
-        {
-            if (playerCollider == null) continue;
+    //void Update()
+    //{
+    //    foreach(var playerCollider in playersOn)
+    //    {
+    //        if (playerCollider == null) continue;
 
-            playerController player = playerCollider.GetComponent<playerController>();
-            if(player != null && player.IsPressingDrop() && player.groundedCheck)
-            {
-                StartCoroutine(DisableCollision(playerCollider));
-            }
-        }
-    }
+    //        playerController player = playerCollider.GetComponent<playerController>();
+    //        if(player != null && player.IsPressingDrop() && player.groundedCheck)
+    //        {
+    //            StartCoroutine(DisableCollision(playerCollider));
+    //        }
+    //    }
+    //}
 
     private void OnCollisionEnter(Collision collision)
     {
