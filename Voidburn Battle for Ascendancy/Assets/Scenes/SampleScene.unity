@@ -191,6 +191,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0caf514a3ba032048a6195a173d72ebe, type: 3}
+--- !u!1 &959357286 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7083659113035505733, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+  m_PrefabInstance: {fileID: 1338603632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &959357290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 959357286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d228b4d5a68da0e41b367be5b6ef9021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
 --- !u!1001 &1017967586
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -396,22 +414,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2118820577929135122, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
-      propertyPath: m_Avatar
-      value: 
-      objectReference: {fileID: 9000000, guid: b9a38aee213836a4ea4c2a245df2ad00, type: 3}
-    - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
-      propertyPath: Hp
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
-      propertyPath: rb
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: opponent
       value: 
       objectReference: {fileID: 2071788848}
+    - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+      propertyPath: attackHitboxes.Array.data[0].hitboxController
+      value: 
+      objectReference: {fileID: 959357290}
+    - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+      propertyPath: attackHitboxes.Array.data[1].hitboxController
+      value: 
+      objectReference: {fileID: 959357290}
+    - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+      propertyPath: attackHitboxes.Array.data[2].hitboxController
+      value: 
+      objectReference: {fileID: 959357290}
+    - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+      propertyPath: attackHitboxes.Array.data[3].hitboxController
+      value: 
+      objectReference: {fileID: 959357290}
     - target: {fileID: 7083659113035505733, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: m_Name
       value: Ely By K.Atienza
@@ -459,7 +481,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7083659113035505733, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 959357290}
   m_SourcePrefab: {fileID: 100100000, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
 --- !u!1001 &1916504141
 PrefabInstance:
@@ -627,14 +652,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
-    are already bound by a Humanoid avatar. These transforms can only be changed
-    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
-    'mixamorig:LeftHandThumb2'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
-    'mixamorig:LeftHandPinky2'\n\tTransform 'mixamorig:RightHandRing2'\n\tTransform
-    'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform 'mixamorig:RightArm'\n\tTransform
-    'mixamorig:LeftLeg'\n\tand more ...\n\tFrom animation clip 'Standing To Crouched'\n\tFrom
-    animation clip 'Crouched To Standing'\n\tFrom animation clip 'Crouching Idle'"
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
