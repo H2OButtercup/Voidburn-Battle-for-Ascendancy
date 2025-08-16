@@ -1857,6 +1857,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa258bb29bebb24d83bee431674f83c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Hp: 60
   moveSpeed: 5
   dashSpeed: 10
   dashDuration: 0.2
@@ -1867,6 +1868,19 @@ MonoBehaviour:
   tapThreshold: 0.3
   crouchHeight: 1
   crouchTransitionDuration: 0.15
+  attackHitboxes:
+  - inputActionName: 
+    animatorTriggerName: 
+    hitboxController: {fileID: 0}
+  - inputActionName: 
+    animatorTriggerName: 
+    hitboxController: {fileID: 0}
+  - inputActionName: 
+    animatorTriggerName: 
+    hitboxController: {fileID: 0}
+  - inputActionName: 
+    animatorTriggerName: 
+    hitboxController: {fileID: 0}
   opponent: {fileID: 0}
   animator: {fileID: 2118820577929135122}
 --- !u!95 &2118820577929135122

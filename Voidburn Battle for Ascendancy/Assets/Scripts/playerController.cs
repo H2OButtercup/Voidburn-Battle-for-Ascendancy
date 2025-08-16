@@ -21,6 +21,10 @@ public class playerController : MonoBehaviour
     public float crouchHeight = 1f;
     public float crouchTransitionDuration = 0.15f;
 
+    [Header("Combat Settings")]
+    [Tooltip("Links input actions to specific hitboxes and animations.")]
+    public HitboxReference[] attackHitboxes;
+
     [Header("References")]
     public Transform opponent;
     public Animator animator;
@@ -28,7 +32,7 @@ public class playerController : MonoBehaviour
     // Player State Machine
     private enum PlayerState
     {
-        Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching
+        Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching, Punching, Kicking, Attacking
     }
     private PlayerState currentState = PlayerState.Idle;
 
@@ -59,12 +63,20 @@ public class playerController : MonoBehaviour
         controls.Enable();
         controls.Player.Move.performed += OnMovePerformed;
         controls.Player.Move.canceled += OnMoveCanceled;
+        controls.Player.AttackLeftHand.performed += OnAttack;
+        controls.Player.AttackRightHand.performed += OnAttack;
+        controls.Player.AttackLeftLeg.performed += OnAttack;
+        controls.Player.AttackRightLeg.performed += OnAttack;
     }
-
+     
     private void OnDisable()
     {
         controls.Player.Move.performed -= OnMovePerformed;
         controls.Player.Move.canceled -= OnMoveCanceled;
+        controls.Player.AttackLeftHand.performed -= OnAttack;
+        controls.Player.AttackRightHand.performed -= OnAttack;
+        controls.Player.AttackLeftLeg.performed -= OnAttack;
+        controls.Player.AttackRightLeg.performed -= OnAttack;
         controls.Disable();
     }
 
@@ -101,7 +113,36 @@ public class playerController : MonoBehaviour
             if (currentState != PlayerState.Crouching && currentState != PlayerState.Jumping)
             {
                 currentState = PlayerState.Idle;
-                animator.SetFloat("MoveSpeed", 0f);
+            }
+        }
+    }
+
+
+    private void OnAttack(InputAction.CallbackContext context)
+    {
+        // Prevent new attacks if an action is already in progress
+        if(currentState != PlayerState.Idle &&  currentState != PlayerState.Walking)
+        {
+            return;
+        }
+
+        string actionName = context.action.name;
+
+        // Get the name of the input that was performed
+        foreach (var hitboxRef in attackHitboxes)
+        {
+            if (hitboxRef.inputActionName == actionName)
+            {
+                // Trigger the animation for this specific attack
+                animator.SetTrigger(hitboxRef.animatorTriggerName);
+
+                hitboxRef.hitboxController.Activate();
+
+                // Set the state to attacking to prevnt other actions
+                currentState = PlayerState.Attacking;
+
+
+                return;
             }
         }
     }
