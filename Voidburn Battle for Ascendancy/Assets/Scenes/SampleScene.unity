@@ -286,6 +286,24 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 2071788851}
   m_SourcePrefab: {fileID: 100100000, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+--- !u!1 &1038781955 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5401856037985071958, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+  m_PrefabInstance: {fileID: 1338603632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1038781957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1038781955}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d228b4d5a68da0e41b367be5b6ef9021, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 10
 --- !u!1 &1058907278
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,19 +439,19 @@ PrefabInstance:
     - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: attackHitboxes.Array.data[0].hitboxController
       value: 
-      objectReference: {fileID: 959357290}
+      objectReference: {fileID: 0}
     - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: attackHitboxes.Array.data[1].hitboxController
       value: 
-      objectReference: {fileID: 959357290}
+      objectReference: {fileID: 0}
     - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: attackHitboxes.Array.data[2].hitboxController
       value: 
-      objectReference: {fileID: 959357290}
+      objectReference: {fileID: 1038781957}
     - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: attackHitboxes.Array.data[3].hitboxController
       value: 
-      objectReference: {fileID: 959357290}
+      objectReference: {fileID: 0}
     - target: {fileID: 7083659113035505733, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: m_Name
       value: Ely By K.Atienza
@@ -485,6 +503,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7083659113035505733, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 959357290}
+    - targetCorrespondingSourceObject: {fileID: 5401856037985071958, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1038781957}
   m_SourcePrefab: {fileID: 100100000, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
 --- !u!1001 &1916504141
 PrefabInstance:

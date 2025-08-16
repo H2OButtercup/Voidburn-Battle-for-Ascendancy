@@ -8,12 +8,12 @@ public class HitboxController : MonoBehaviour
 
     private void Awake()
     {
-        hitboxCollider = GetComponent<Collider>();
-        if (hitboxCollider != null)
-        {
-           // hitboxCollider.isTrigger = true;
-           // hitboxCollider.enabled = false; // Start with the hitbox disabled
-        }
+        //hitboxCollider = GetComponent<Collider>();
+        //if (hitboxCollider != null)
+        //{
+        //    hitboxCollider.isTrigger = true;
+        //    hitboxCollider.enabled = false; // Start with the hitbox disabled
+        //}
     }
 
     public void Activate()
@@ -28,7 +28,7 @@ public class HitboxController : MonoBehaviour
     {
         if (hitboxCollider != null)
         {
-           //hitboxCollider.enabled = false;
+           // hitboxCollider.enabled = false;
         }
     }
 
