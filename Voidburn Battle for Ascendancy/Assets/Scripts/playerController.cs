@@ -5,6 +5,10 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class playerController : MonoBehaviour
 {
+    [Header("General Stats")]
+    public int Hp;
+
+
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float dashSpeed = 10f;
@@ -17,6 +21,10 @@ public class playerController : MonoBehaviour
     public float crouchHeight = 1f;
     public float crouchTransitionDuration = 0.15f;
 
+    [Header("Combat Settings")]
+    [Tooltip("Links input actions to specific hitboxes and animations.")]
+    public HitboxReference[] attackHitboxes;
+
     [Header("References")]
     public Transform opponent;
     public Animator animator;
@@ -24,7 +32,7 @@ public class playerController : MonoBehaviour
     // Player State Machine
     private enum PlayerState
     {
-        Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching
+        Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching, Attacking
     }
     private PlayerState currentState = PlayerState.Idle;
 
@@ -55,12 +63,20 @@ public class playerController : MonoBehaviour
         controls.Enable();
         controls.Player.Move.performed += OnMovePerformed;
         controls.Player.Move.canceled += OnMoveCanceled;
+        controls.Player.AttackLeftHand.performed += OnAttack;
+        controls.Player.AttackRightHand.performed += OnAttack;
+        controls.Player.AttackLeftLeg.performed += OnAttack;
+        controls.Player.AttackRightLeg.performed += OnAttack;
     }
-
+     
     private void OnDisable()
     {
         controls.Player.Move.performed -= OnMovePerformed;
         controls.Player.Move.canceled -= OnMoveCanceled;
+        controls.Player.AttackLeftHand.performed -= OnAttack;
+        controls.Player.AttackRightHand.performed -= OnAttack;
+        controls.Player.AttackLeftLeg.performed -= OnAttack;
+        controls.Player.AttackRightLeg.performed -= OnAttack;
         controls.Disable();
     }
 
@@ -73,6 +89,12 @@ public class playerController : MonoBehaviour
 
     private void HandleStateLogic()
     {
+        bool walkingForward = moveInput.x > 0.1f;
+        bool walkingBackward = moveInput.x < -0.1f;
+
+        animator.SetBool("IsWalkingForward", walkingForward);
+        animator.SetBool("IsWalkingBackward", walkingBackward);
+
         // One-shot actions (like a dash or sidestep) complete via their Coroutine.
         // We do not want to interrupt them with continuous movement logic.
         if (currentState == PlayerState.Dashing || currentState == PlayerState.Backdashing || currentState == PlayerState.Sidestepping)
@@ -97,7 +119,36 @@ public class playerController : MonoBehaviour
             if (currentState != PlayerState.Crouching && currentState != PlayerState.Jumping)
             {
                 currentState = PlayerState.Idle;
-                animator.SetFloat("MoveSpeed", 0f);
+            }
+        }
+    }
+
+
+    private void OnAttack(InputAction.CallbackContext context)
+    {
+        // Prevent new attacks if an action is already in progress
+        if(currentState != PlayerState.Idle &&  currentState != PlayerState.Walking)
+        {
+            return;
+        }
+
+        string actionName = context.action.name;
+
+        // Get the name of the input that was performed
+        foreach (var hitboxRef in attackHitboxes)
+        {
+            if (hitboxRef.inputActionName == actionName)
+            {
+                // Trigger the animation for this specific attack
+                animator.SetTrigger(hitboxRef.animatorTriggerName);
+
+                hitboxRef.hitboxController.Activate();
+
+                // Set the state to attacking to prevnt other actions
+                currentState = PlayerState.Attacking;
+
+
+                return;
             }
         }
     }
@@ -161,12 +212,6 @@ public class playerController : MonoBehaviour
 
         Vector3 move = moveDirection * moveSpeed;
         characterController.Move(move * Time.deltaTime);
-
-        bool walkingForward = moveInput.x > 0.1f;
-        bool walkingBackward = moveInput.x < -0.1f;
-
-        animator.SetBool("IsWalkingForward", walkingForward);
-        animator.SetBool("IsWalkingBackward", walkingBackward);
     }
 
     private void TriggerDash()
@@ -182,7 +227,7 @@ public class playerController : MonoBehaviour
         if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
         currentActionCoroutine = StartCoroutine(DashRoutine(-dashSpeed));
         currentState = PlayerState.Backdashing;
-        animator.SetTrigger("Backdash");
+          animator.SetTrigger("Backdash");
     }
 
     private IEnumerator DashRoutine(float speed)
@@ -251,12 +296,12 @@ public class playerController : MonoBehaviour
 
     private void TryJump()
     {
-        if (characterController.isGrounded)
-        {
-            verticalVelocity = jumpForce;
-            animator.SetTrigger("Jump");
-            currentState = PlayerState.Jumping;
-        }
+            if (characterController.isGrounded)
+            {
+                verticalVelocity = jumpForce;
+                animator.SetTrigger("Jump");
+                currentState = PlayerState.Jumping;
+            }
     }
 
     private void TryCrouch()
@@ -334,11 +379,14 @@ public class playerController : MonoBehaviour
     {
         if (characterController.isGrounded)
         {
-            verticalVelocity = -2f;
-            if (currentState == PlayerState.Jumping)
+            if (currentState == PlayerState.Jumping && verticalVelocity <= 0)
             {
-                animator.SetTrigger("Land");
                 currentState = PlayerState.Idle;
+            }
+
+            if(verticalVelocity < 0)
+            {
+                verticalVelocity = -2f;
             }
         }
         else
@@ -349,4 +397,18 @@ public class playerController : MonoBehaviour
         Vector3 moveVector = new Vector3(0, verticalVelocity, 0);
         characterController.Move(moveVector * Time.deltaTime);
     }
+
+    void takeDamage(int damage)
+    {
+        Hp -= damage;
+    }
+    //public bool groundedCheck()
+    //{
+    //    if (isGrounded)
+    //        return true;
+    //    else return false;
+
+    //}
+
+
 }

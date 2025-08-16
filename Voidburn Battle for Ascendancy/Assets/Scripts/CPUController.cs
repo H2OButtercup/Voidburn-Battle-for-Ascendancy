@@ -146,7 +146,6 @@ public class CPUController : MonoBehaviour
         switch (currentState)
         {
             case AIState.Idle:
-                animator.SetFloat("MoveSpeed", 0f);
                 break;
 
             case AIState.Approaching:
@@ -182,7 +181,5 @@ public class CPUController : MonoBehaviour
             // Fallback for simple movement
             transform.position += direction * moveSpeed * Time.deltaTime;
         }
-
-        animator.SetFloat("MoveSpeed", 1f);
     }
 }
