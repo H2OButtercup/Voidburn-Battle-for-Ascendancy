@@ -3,6 +3,10 @@ using UnityEngine.InputSystem;
 
 public class playerController : MonoBehaviour
 {
+    [Header("General Stats")]
+    public int Hp;
+
+
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
@@ -192,4 +196,18 @@ public class playerController : MonoBehaviour
 
         isGrounded = Physics.Raycast(origin, Vector3.down, rayLength);
     }
+
+    void takeDamage(int damage)
+    {
+        Hp -= damage;
+    }
+    public bool groundedCheck()
+    {
+        if (isGrounded)
+            return true;
+        else return false;
+
+    }
+
+
 }
