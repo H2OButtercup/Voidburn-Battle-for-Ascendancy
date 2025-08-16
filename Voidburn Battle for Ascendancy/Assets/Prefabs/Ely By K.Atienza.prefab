@@ -1844,7 +1844,7 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &6865230798340881654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1857,13 +1857,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa258bb29bebb24d83bee431674f83c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  opponent: {fileID: 0}
-  controller: {fileID: 7094772783124928087}
-  animator: {fileID: 2118820577929135122}
   moveSpeed: 5
-  sidestepDistance: 2
+  dashSpeed: 10
+  dashDuration: 0.2
   jumpForce: 5
+  sideStepDistance: 2
+  sideWalkSpeed: 3
+  rotationSpeed: 5
   tapThreshold: 0.3
+  crouchHeight: 1
+  crouchTransitionDuration: 0.15
+  opponent: {fileID: 0}
+  animator: {fileID: 2118820577929135122}
 --- !u!95 &2118820577929135122
 Animator:
   serializedVersion: 7
@@ -1873,7 +1878,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7083659113035505733}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: a6a7eb2574f48ba4fb77d0af2ab26b31, type: 3}
+  m_Avatar: {fileID: 9000000, guid: b9a38aee213836a4ea4c2a245df2ad00, type: 3}
   m_Controller: {fileID: 9100000, guid: 73650af98dcec5a48a18c26fbe7df3ab, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
@@ -1881,7 +1886,14 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'mixamorig:Hips'\n\tTransform 'mixamorig:LeftFoot'\n\tTransform
+    'mixamorig:LeftHandThumb2'\n\tTransform 'mixamorig:LeftHandIndex1'\n\tTransform
+    'mixamorig:LeftHandPinky2'\n\tTransform 'mixamorig:RightHandRing2'\n\tTransform
+    'mixamorig:Spine1'\n\tTransform 'mixamorig:LeftToeBase'\n\tTransform 'mixamorig:RightArm'\n\tTransform
+    'mixamorig:LeftLeg'\n\tand more ...\n\tFrom animation clip 'Standing To Crouched'\n\tFrom
+    animation clip 'Crouched To Standing'\n\tFrom animation clip 'Crouching Idle'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
