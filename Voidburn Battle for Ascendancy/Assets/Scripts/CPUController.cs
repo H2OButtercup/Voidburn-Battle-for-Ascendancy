@@ -138,9 +138,6 @@ public class CPUController : MonoBehaviour
             // If the player is too far, just wait
             currentState = AIState.Idle;
         }
-
-        // You could add a random chance to block or sidestep here
-        // to make the AI less predictable.
     }
 
     private void ExecuteCurrentState()

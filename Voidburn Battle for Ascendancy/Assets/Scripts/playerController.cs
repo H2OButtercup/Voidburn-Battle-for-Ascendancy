@@ -162,7 +162,11 @@ public class playerController : MonoBehaviour
         Vector3 move = moveDirection * moveSpeed;
         characterController.Move(move * Time.deltaTime);
 
-        animator.SetFloat("MoveSpeed", Mathf.Abs(moveInput.x));
+        bool walkingForward = moveInput.x > 0.1f;
+        bool walkingBackward = moveInput.x < -0.1f;
+
+        animator.SetBool("IsWalkingForward", walkingForward);
+        animator.SetBool("IsWalkingBackward", walkingBackward);
     }
 
     private void TriggerDash()
