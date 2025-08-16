@@ -1,70 +1,166 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
+[RequireComponent(typeof(CharacterController))]
 public class playerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
+    public float dashSpeed = 10f;
+    public float dashDuration = 0.2f;
     public float jumpForce = 7f;
     public float sideStepDistance = 2f;
+    public float sideWalkSpeed = 3f;
     public float rotationSpeed = 5f;
     public float tapThreshold = 0.3f;
+    public float crouchHeight = 1f;
+    public float crouchTransitionDuration = 0.15f;
 
     [Header("References")]
     public Transform opponent;
     public Animator animator;
 
-    private PlayerControls controls;
-    private Vector2 moveInput;
-    private bool isGrounded = true;
-    private bool isSideStepping = false;
+    // Player State Machine
+    private enum PlayerState
+    {
+        Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching
+    }
+    private PlayerState currentState = PlayerState.Idle;
 
+    // Input System & State
+    private PlayerControls controls;
+    private CharacterController characterController;
+    private Vector2 moveInput;
     private float verticalVelocity = 0f;
+
+    // Tap detection
+    private float lastHorizontalTapTime = -1f;
     private float lastVerticalTapTime = -1f;
-    private int verticalTapCount = 0;
+
+    // CharacterController dimensions
+    private float originalHeight;
+    private float originalCenterY;
+
+    private Coroutine currentActionCoroutine;
 
     private void Awake()
     {
         controls = new PlayerControls();
+        characterController = GetComponent<CharacterController>();
     }
 
     private void OnEnable()
     {
         controls.Enable();
-        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
-        controls.Player.Jump.performed += ctx => TryJump();
-        controls.Player.Crouch.performed += ctx => TryCrouch();
+        controls.Player.Move.performed += OnMovePerformed;
+        controls.Player.Move.canceled += OnMoveCanceled;
     }
 
     private void OnDisable()
     {
-        controls.Player.Move.performed -= ctx => moveInput = ctx.ReadValue<Vector2>();
-        controls.Player.Move.canceled -= ctx => moveInput = Vector2.zero;
-        controls.Player.Jump.performed -= ctx => TryJump();
-        controls.Player.Crouch.performed -= ctx => TryCrouch();
+        controls.Player.Move.performed -= OnMovePerformed;
+        controls.Player.Move.canceled -= OnMoveCanceled;
         controls.Disable();
     }
 
     private void Update()
     {
-        CheckGrounded();
-        HandleMovement();
         HandleFacing();
-        HandleVerticalInput(moveInput.y);
         ApplyGravity();
+        HandleStateLogic();
+    }
+
+    private void HandleStateLogic()
+    {
+        // One-shot actions (like a dash or sidestep) complete via their Coroutine.
+        // We do not want to interrupt them with continuous movement logic.
+        if (currentState == PlayerState.Dashing || currentState == PlayerState.Backdashing || currentState == PlayerState.Sidestepping)
+        {
+            return;
+        }
+
+        // Continuous movement logic
+        if (Mathf.Abs(moveInput.x) > 0.1f)
+        {
+            currentState = PlayerState.Walking;
+            HandleMovement();
+        }
+        else if (Mathf.Abs(moveInput.y) > 0.1f)
+        {
+            currentState = PlayerState.Sidewalking;
+            HandleSidewalk();
+        }
+        else
+        {
+            // Only go to Idle if no movement input is detected
+            if (currentState != PlayerState.Crouching && currentState != PlayerState.Jumping)
+            {
+                currentState = PlayerState.Idle;
+                animator.SetFloat("MoveSpeed", 0f);
+            }
+        }
+    }
+
+    private void OnMovePerformed(InputAction.CallbackContext context)
+    {
+        moveInput = context.ReadValue<Vector2>();
+
+        // We only care about horizontal taps for dashes
+        float timeSinceLastHorizontalTap = Time.time - lastHorizontalTapTime;
+        if (Mathf.Abs(moveInput.x) > 0.8f && timeSinceLastHorizontalTap < tapThreshold && characterController.isGrounded)
+        {
+            if (moveInput.x > 0)
+                TriggerDash();
+            else
+                TriggerBackdash();
+
+            lastHorizontalTapTime = -1f;
+            return; // Exit to prevent double-tap also triggering walk
+        }
+        lastHorizontalTapTime = Time.time;
+
+        // We only care about vertical taps for jumps, crouches, and sidesteps
+        float timeSinceLastVerticalTap = Time.time - lastVerticalTapTime;
+        if (Mathf.Abs(moveInput.y) > 0.8f)
+        {
+            // Double-tap vertical for Sidestep
+            if (timeSinceLastVerticalTap < tapThreshold && characterController.isGrounded)
+            {
+                if (moveInput.y > 0)
+                    TriggerSidestepOut(); // up, up
+                else
+                    TriggerSidestepIn(); // down, down
+
+                lastVerticalTapTime = -1f;
+                return; // Exit to prevent single-tap action as well
+            }
+            // Single-tap vertical for Jump/Crouch
+            else
+            {
+                if (moveInput.y > 0 && characterController.isGrounded)
+                    TryJump(); // up
+                else if (moveInput.y < 0 && characterController.isGrounded)
+                    TryCrouch(); // down
+            }
+        }
+        lastVerticalTapTime = Time.time;
+    }
+
+    private void OnMoveCanceled(InputAction.CallbackContext context)
+    {
+        moveInput = Vector2.zero;
     }
 
     private void HandleMovement()
     {
-        if (opponent == null || isSideStepping) return;
+        if (opponent == null) return;
 
         Vector3 toOpponent = (opponent.position - transform.position).normalized;
-        Vector3 moveDirection = toOpponent * moveInput.x; // Left/Right input = toward/away
+        Vector3 moveDirection = toOpponent * moveInput.x;
 
-        moveDirection.y = 0f;
-        Vector3 move = moveDirection * moveSpeed * Time.deltaTime;
-        transform.position += move;
+        Vector3 move = moveDirection * moveSpeed;
+        characterController.Move(move * Time.deltaTime);
 
         bool walkingForward = moveInput.x > 0.1f;
         bool walkingBackward = moveInput.x < -0.1f;
@@ -73,123 +169,184 @@ public class playerController : MonoBehaviour
         animator.SetBool("IsWalkingBackward", walkingBackward);
     }
 
-    private void HandleFacing()
+    private void TriggerDash()
     {
-        if (isGrounded && !isSideStepping && opponent != null)
-        {
-            Vector3 direction = opponent.position - transform.position;
-            direction.y = 0;
-
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-        }
+        if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
+        currentActionCoroutine = StartCoroutine(DashRoutine(dashSpeed));
+        currentState = PlayerState.Dashing;
+        animator.SetTrigger("DashForward");
     }
 
-    private void HandleVerticalInput(float vertical)
+    private void TriggerBackdash()
     {
-        if (Mathf.Abs(vertical) < 0.8f) return;
-
-        if (Time.time - lastVerticalTapTime < tapThreshold)
-        {
-            verticalTapCount++;
-        }
-        else
-        {
-            verticalTapCount = 1;
-        }
-
-        lastVerticalTapTime = Time.time;
-
-        if (verticalTapCount == 2)
-        {
-            if (vertical > 0)
-                TriggerSidestepOut(); // Double tap up
-            else
-                TriggerSidestepIn();  // Double tap down
-
-            verticalTapCount = 0;
-        }
-        else
-        {
-            if (vertical > 0)
-                TryJump();       // Single tap up
-            else
-                TryCrouch();     // Single tap down
-        }
+        if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
+        currentActionCoroutine = StartCoroutine(DashRoutine(-dashSpeed));
+        currentState = PlayerState.Backdashing;
+        animator.SetTrigger("Backdash");
     }
 
-    private void TryJump()
+    private IEnumerator DashRoutine(float speed)
     {
-        if (!isGrounded) return;
+        float startTime = Time.time;
+        Vector3 toOpponent = (opponent.position - transform.position).normalized;
 
-        verticalVelocity = jumpForce;
-        animator.SetTrigger("Jump");
-        isGrounded = false;
+        while (Time.time < startTime + dashDuration)
+        {
+            Vector3 dashDirection = toOpponent * (speed / moveSpeed);
+            characterController.Move(dashDirection * moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+        currentState = PlayerState.Idle;
     }
 
-    private void TryCrouch()
+    private void HandleSidewalk()
     {
-        if (!isGrounded) return;
+        if (opponent == null) return;
 
-        animator.SetTrigger("Crouch");
+        Vector3 toOpponent = (opponent.position - transform.position).normalized;
+        Vector3 side = Vector3.Cross(Vector3.up, toOpponent).normalized;
+
+        Vector3 move = side * -moveInput.y * sideWalkSpeed;
+        characterController.Move(move * Time.deltaTime);
+
+        animator.SetFloat("SideWalkSpeed", Mathf.Abs(moveInput.y));
     }
 
     private void TriggerSidestepIn()
     {
-        if (!isGrounded || opponent == null) return;
-
-        isSideStepping = true;
-
-        Vector3 toOpponent = (opponent.position - transform.position).normalized;
-        Vector3 side = Vector3.Cross(Vector3.up, toOpponent).normalized;
-
-        Vector3 step = -side * sideStepDistance;
-        transform.position += step;
-
+        if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
+        currentActionCoroutine = StartCoroutine(SidestepRoutine(1));
+        currentState = PlayerState.Sidestepping;
         animator.SetTrigger("SidestepLeft");
-        Invoke(nameof(ResetSideStep), 0.3f);
     }
 
     private void TriggerSidestepOut()
     {
-        if (!isGrounded || opponent == null) return;
-
-        isSideStepping = true;
-
-        Vector3 toOpponent = (opponent.position - transform.position).normalized;
-        Vector3 side = Vector3.Cross(Vector3.up, toOpponent).normalized;
-
-        Vector3 step = side * sideStepDistance;
-        transform.position += step;
-
+        if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
+        currentActionCoroutine = StartCoroutine(SidestepRoutine(-1));
+        currentState = PlayerState.Sidestepping;
         animator.SetTrigger("SidestepRight");
-        Invoke(nameof(ResetSideStep), 0.3f);
     }
 
-    private void ResetSideStep()
+    private IEnumerator SidestepRoutine(float direction)
     {
-        isSideStepping = false;
+        Vector3 toOpponent = (opponent.position - transform.position).normalized;
+        Vector3 side = Vector3.Cross(Vector3.up, toOpponent).normalized;
+        Vector3 step = side * sideStepDistance * direction;
+
+        characterController.Move(step);
+
+        yield return new WaitForSeconds(0.2f);
+        currentState = PlayerState.Idle;
+    }
+
+    private void HandleFacing()
+    {
+        if (opponent == null) return;
+        Vector3 direction = opponent.position - transform.position;
+        direction.y = 0;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+    }
+
+    private void TryJump()
+    {
+        if (characterController.isGrounded)
+        {
+            verticalVelocity = jumpForce;
+            animator.SetTrigger("Jump");
+            currentState = PlayerState.Jumping;
+        }
+    }
+
+    private void TryCrouch()
+    {
+        if (characterController.isGrounded && currentState != PlayerState.Crouching)
+        {
+            if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
+            currentActionCoroutine = StartCoroutine(CrouchRoutine());
+        }
+    }
+
+    private IEnumerator CrouchRoutine()
+    {
+        currentState = PlayerState.Crouching;
+        animator.SetTrigger("Crouch");
+
+        float time = 0;
+        float heightChange = originalHeight - crouchHeight;
+        Vector3 originalPosition = transform.position;
+
+        // Crouch Down
+        while (time < 1f)
+        {
+            float t = time / 1f;
+            characterController.height = Mathf.Lerp(originalHeight, crouchHeight, t);
+            characterController.center = new Vector3(characterController.center.x, Mathf.Lerp(originalCenterY, originalCenterY - heightChange / 2f, t), characterController.center.z);
+            transform.position = Vector3.Lerp(originalPosition, new Vector3(originalPosition.x, originalPosition.y - heightChange, originalPosition.z), t);
+            time += Time.deltaTime / crouchTransitionDuration;
+            yield return null;
+        }
+
+        // Snap to final values
+        characterController.height = crouchHeight;
+        characterController.center = new Vector3(characterController.center.x, originalCenterY - heightChange / 2f, characterController.center.z);
+        transform.position = new Vector3(originalPosition.x, originalPosition.y - heightChange, originalPosition.z);
+
+        // Wait while the crouch is active
+        while (moveInput.y < -0.8f && characterController.isGrounded)
+        {
+            yield return null;
+        }
+
+        // --- Un-Crouch ---
+
+        // Check for a ceiling before standing up
+        if (Physics.Raycast(transform.position, Vector3.up, originalHeight))
+        {
+            // If there's a ceiling, stay crouched
+            currentState = PlayerState.Idle;
+            yield break;
+        }
+
+        animator.SetTrigger("UnCrouch");
+
+        time = 0;
+        Vector3 crouchedPosition = transform.position;
+
+        while (time < 1f)
+        {
+            float t = time / 1f;
+            characterController.height = Mathf.Lerp(crouchHeight, originalHeight, t);
+            characterController.center = new Vector3(characterController.center.x, Mathf.Lerp(originalCenterY - heightChange / 2f, originalCenterY, t), characterController.center.z);
+            transform.position = Vector3.Lerp(crouchedPosition, originalPosition, t);
+            time += Time.deltaTime / crouchTransitionDuration;
+            yield return null;
+        }
+
+        characterController.height = originalHeight;
+        characterController.center = new Vector3(characterController.center.x, originalCenterY, characterController.center.z);
+        transform.position = originalPosition;
+        currentState = PlayerState.Idle;
     }
 
     private void ApplyGravity()
     {
-        if (isGrounded && verticalVelocity < 0)
+        if (characterController.isGrounded)
         {
             verticalVelocity = -2f;
-            animator.SetTrigger("Land");
+            if (currentState == PlayerState.Jumping)
+            {
+                animator.SetTrigger("Land");
+                currentState = PlayerState.Idle;
+            }
         }
         else
         {
             verticalVelocity += Physics.gravity.y * Time.deltaTime;
-            transform.position += new Vector3(0, verticalVelocity * Time.deltaTime, 0);
         }
-    }
 
-    private void CheckGrounded()
-    {
-        float rayLength = 0.2f;
-        Vector3 origin = transform.position + Vector3.up * 0.1f;
-
-        isGrounded = Physics.Raycast(origin, Vector3.down, rayLength);
+        Vector3 moveVector = new Vector3(0, verticalVelocity, 0);
+        characterController.Move(moveVector * Time.deltaTime);
     }
 }
