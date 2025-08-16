@@ -141,7 +141,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Previous"",
                     ""type"": ""Button"",
                     ""id"": ""2776c80d-3c14-4091-8c56-d04ced07a2b0"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -204,6 +204,24 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""SideStep"",
                     ""type"": ""Button"",
                     ""id"": ""efe48e2c-d17b-406b-a605-966ba816a6d3"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DashBack"",
+                    ""type"": ""Button"",
+                    ""id"": ""a961f60d-180b-48e7-b18a-bacca7ad0c27"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SideWalk"",
+                    ""type"": ""Button"",
+                    ""id"": ""f6f7d72a-88a6-4271-8dba-488f35e229d7"",
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
@@ -444,20 +462,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""eb40bb66-4559-4dfa-9a2f-820438abb426"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
-                    ""action"": ""Jump"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""daba33a1-ad0c-4742-a909-43ad1cdfbeb6"",
                     ""path"": ""<Gamepad>/leftStick/up"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": ""Tap,Hold"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Jump"",
@@ -468,9 +475,20 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""909f9ecb-bece-4a3f-ad49-fcee6e68e4b9"",
                     ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": ""Tap"",
+                    ""interactions"": ""Tap,Hold"",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6bbc4c84-c116-4cae-b0be-38ece7f99081"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -523,7 +541,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""4f4649ac-64a8-4a73-af11-b3faef356a4d"",
                     ""path"": ""<Joystick>/stick/down"",
-                    ""interactions"": """",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Crouch"",
@@ -532,22 +550,22 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""36e52cba-0905-478e-a818-f4bfcb9f3b9a"",
-                    ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
+                    ""id"": ""b39a85d2-ec67-4ad2-b522-a231eea6d895"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
-                    ""groups"": ""Keyboard&Mouse"",
+                    ""groups"": "";Gamepad"",
                     ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""b39a85d2-ec67-4ad2-b522-a231eea6d895"",
-                    ""path"": ""<Gamepad>/dpad/down"",
-                    ""interactions"": """",
+                    ""id"": ""ea967a16-a43a-4936-b79e-aab92b56619a"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": ""Hold"",
                     ""processors"": """",
-                    ""groups"": "";Gamepad"",
+                    ""groups"": """",
                     ""action"": ""Crouch"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -610,7 +628,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""bfd80eee-243f-40b3-9770-195ad81043cb"",
-                    ""path"": ""<Joystick>/stick/down"",
+                    ""path"": ""<Gamepad>/leftStick/down"",
                     ""interactions"": ""MultiTap"",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -632,11 +650,110 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""85ed47d8-ce8d-4ff1-84b3-2d7f6217549d"",
-                    ""path"": ""<Joystick>/stick/up"",
+                    ""path"": ""<Gamepad>/rightStick/up"",
                     ""interactions"": ""MultiTap"",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""SideStep"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""94a0dc3f-b8ec-4b9a-a10d-99173c9bac7f"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SideStep"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54d86e18-d731-4d89-9280-702c2283569a"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SideStep"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""33047fd6-c849-4f64-96f7-0499b1bc6ed6"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""DashBack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f8be8727-206b-4bc7-8b36-3c65f39d2fec"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""DashBack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""db9946c4-a180-4475-bef7-24cfdabc54c8"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": ""MultiTap"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""DashBack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1ea7e72-e0e5-4cad-b2c0-520df62317db"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SideWalk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8bb843f8-8053-4194-95ee-8333bbca6003"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""SideWalk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6027033e-e03c-4674-9fcc-ff3b57e4d935"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": ""MultiTap,Hold"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SideWalk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ecd4517-833e-4911-956c-58b258e90625"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": ""MultiTap,Hold"",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""SideWalk"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1237,6 +1354,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Player_AttackRightLeg = m_Player.FindAction("Attack Right Leg", throwIfNotFound: true);
         m_Player_AttackLeftLeg = m_Player.FindAction("Attack Left Leg", throwIfNotFound: true);
         m_Player_SideStep = m_Player.FindAction("SideStep", throwIfNotFound: true);
+        m_Player_DashBack = m_Player.FindAction("DashBack", throwIfNotFound: true);
+        m_Player_SideWalk = m_Player.FindAction("SideWalk", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1343,6 +1462,8 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_AttackRightLeg;
     private readonly InputAction m_Player_AttackLeftLeg;
     private readonly InputAction m_Player_SideStep;
+    private readonly InputAction m_Player_DashBack;
+    private readonly InputAction m_Player_SideWalk;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -1406,6 +1527,14 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/SideStep".
         /// </summary>
         public InputAction @SideStep => m_Wrapper.m_Player_SideStep;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/DashBack".
+        /// </summary>
+        public InputAction @DashBack => m_Wrapper.m_Player_DashBack;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SideWalk".
+        /// </summary>
+        public InputAction @SideWalk => m_Wrapper.m_Player_SideWalk;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1471,6 +1600,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SideStep.started += instance.OnSideStep;
             @SideStep.performed += instance.OnSideStep;
             @SideStep.canceled += instance.OnSideStep;
+            @DashBack.started += instance.OnDashBack;
+            @DashBack.performed += instance.OnDashBack;
+            @DashBack.canceled += instance.OnDashBack;
+            @SideWalk.started += instance.OnSideWalk;
+            @SideWalk.performed += instance.OnSideWalk;
+            @SideWalk.canceled += instance.OnSideWalk;
         }
 
         /// <summary>
@@ -1521,6 +1656,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SideStep.started -= instance.OnSideStep;
             @SideStep.performed -= instance.OnSideStep;
             @SideStep.canceled -= instance.OnSideStep;
+            @DashBack.started -= instance.OnDashBack;
+            @DashBack.performed -= instance.OnDashBack;
+            @DashBack.canceled -= instance.OnDashBack;
+            @SideWalk.started -= instance.OnSideWalk;
+            @SideWalk.performed -= instance.OnSideWalk;
+            @SideWalk.canceled -= instance.OnSideWalk;
         }
 
         /// <summary>
@@ -1912,6 +2053,20 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSideStep(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "DashBack" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnDashBack(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SideWalk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSideWalk(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
