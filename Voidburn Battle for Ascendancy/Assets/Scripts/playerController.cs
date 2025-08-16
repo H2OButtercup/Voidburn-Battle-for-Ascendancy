@@ -29,6 +29,9 @@ public class playerController : MonoBehaviour
     public Transform opponent;
     public Animator animator;
 
+    [Header("Audio Settings")]
+    public AudioSource audSource;
+
     // Player State Machine
     private enum PlayerState
     {
