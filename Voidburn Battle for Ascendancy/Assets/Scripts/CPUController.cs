@@ -1,22 +1,57 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class CPUController : MonoBehaviour
 {
-    [SerializeField] Transform player;
-    [SerializeField] Animator animator;
-    [SerializeField] float moveSpeed = 5f;
-    [SerializeField] float reactionTime = 0.5f;
+    [Header("Dependencies")]
+    [SerializeField] private Transform player;
+    [SerializeField] private Animator animator;
+    [SerializeField] private CharacterController characterController;
+    [Header("AI Parameters")]
+    [SerializeField] private float moveSpeed = 5f;
+    [SerializeField] private float reactionTime = 0.5f;
+    [SerializeField] private float attackRange = 2f;
+    [SerializeField] private float maxDistanceToPlayer = 10f;
 
-    private Vector3 lastPlayerPosition;
+    [Header("Learning Parameters")]
+    [Tooltip("How many frames of player movement to analyze.")]
+    [SerializeField] private int analysisWindowSize = 5;
+    [SerializeField] private float jumpThreshold = 0.5f;
+    [SerializeField] private float sidestepThreshold = 0.5f;
+    // AI State Machine
+    private enum AIState { Idle, Approaching, Attacking, Punishing, Blocking }
+    private AIState currentState;
+
+    // Internal State and Data
     private float timeSinceLastDecision;
-    private int sidestepCount;
-    private int attackCount;
-    private int jumpCount;
+    private Vector3 lastPlayerPosition;
+    private Queue<PlayerAction> playerActionHistory;
 
-    void Update()
+    // Helper class to store player action data
+    private class PlayerAction
+    {
+        public bool isJumping;
+        public bool isSidestepping;
+    }
+
+    private void Start()
+    {
+        currentState = AIState.Idle;
+        lastPlayerPosition = player.position;
+        playerActionHistory = new Queue<PlayerAction>();
+
+        // Ensure we have all necessary components
+        if (!characterController)
+        {
+            Debug.LogError("CharacterController not assigned on CPUController.");
+        }
+    }
+
+    private void Update()
     {
         timeSinceLastDecision += Time.deltaTime;
 
+        // Only make a new decision after the reaction time has passed
         if (timeSinceLastDecision >= reactionTime)
         {
             AnalyzePlayerBehavior();
@@ -25,55 +60,129 @@ public class CPUController : MonoBehaviour
         }
 
         FacePlayer();
+        ExecuteCurrentState();
     }
 
-    void FacePlayer()
+    private void FacePlayer()
     {
         Vector3 direction = player.position - transform.position;
         direction.y = 0;
-        transform.rotation = Quaternion.LookRotation(direction);
+        if (direction != Vector3.zero)
+        {
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * 10f);
+        }
     }
 
-    void AnalyzePlayerBehavior()
+    private void AnalyzePlayerBehavior()
     {
         Vector3 movementDelta = player.position - lastPlayerPosition;
 
-        if (Mathf.Abs(movementDelta.x) > 1f)
-            sidestepCount++;
+        bool isJumping = movementDelta.y > jumpThreshold;
+        bool isSidestepping = Mathf.Abs(movementDelta.x) > sidestepThreshold;
 
-        if (movementDelta.z > 1f)
-            jumpCount++;
+        // Add the current action to the history
+        playerActionHistory.Enqueue(new PlayerAction { isJumping = isJumping, isSidestepping = isSidestepping });
+
+        // Keep the history size within the specified window
+        if (playerActionHistory.Count > analysisWindowSize)
+        {
+            playerActionHistory.Dequeue();
+        }
 
         lastPlayerPosition = player.position;
     }
 
-    void MakeDecision()
+    private void MakeDecision()
     {
-        if (sidestepCount > 3)
+        float distance = Vector3.Distance(transform.position, player.position);
+
+        // Analyze player history for common actions
+        int sidestepCount = 0;
+        int jumpCount = 0;
+        foreach (var action in playerActionHistory)
         {
+            if (action.isSidestepping) sidestepCount++;
+            if (action.isJumping) jumpCount++;
+        }
+
+        // --- Decision-Making Hierarchy ---
+
+        // 1. Punish predictable behavior
+        if (sidestepCount >= analysisWindowSize)
+        {
+            currentState = AIState.Punishing;
             animator.SetTrigger("Sweep"); // Punish sidestep
-            sidestepCount = 0;
+            playerActionHistory.Clear(); // Reset history to focus on new behavior
+            return;
         }
-        else if (jumpCount > 2)
+
+        if (jumpCount >= analysisWindowSize - 1) // Give a little leeway for jumps
         {
+            currentState = AIState.Punishing;
             animator.SetTrigger("AntiAir");
-            jumpCount = 0;
+            playerActionHistory.Clear();
+            return;
         }
-        else
+
+        // 2. Handle distance to player
+        if (distance <= attackRange)
         {
-            float distance = Vector3.Distance(transform.position, player.position);
-            if (distance > 3f)
-                MoveTowardsPlayer();
-            else
-                animator.SetTrigger("Attack");
+            currentState = AIState.Attacking;
+        }
+        else if (distance > attackRange)
+        {
+            currentState = AIState.Approaching;
+        }
+        else if (distance > maxDistanceToPlayer)
+        {
+            // If the player is too far, just wait
+            currentState = AIState.Idle;
         }
     }
 
-    void MoveTowardsPlayer()
+    private void ExecuteCurrentState()
+    {
+        // Use a switch statement to handle each state's logic
+        switch (currentState)
+        {
+            case AIState.Idle:
+                animator.SetFloat("MoveSpeed", 0f);
+                break;
+
+            case AIState.Approaching:
+                MoveTowardsPlayer();
+                break;
+
+            case AIState.Attacking:
+                animator.SetTrigger("Attack");
+                currentState = AIState.Idle;
+                break;
+
+            case AIState.Punishing:
+                break;
+
+            case AIState.Blocking:
+                animator.SetBool("IsBlocking", true);
+                break;
+        }
+    }
+
+    private void MoveTowardsPlayer()
     {
         Vector3 direction = (player.position - transform.position).normalized;
         direction.y = 0;
-        transform.position += direction * moveSpeed * Time.deltaTime;
+
+        // Use CharacterController.Move for proper collision handling
+        if (characterController)
+        {
+            characterController.Move(direction * moveSpeed * Time.deltaTime);
+        }
+        else
+        {
+            // Fallback for simple movement
+            transform.position += direction * moveSpeed * Time.deltaTime;
+        }
+
         animator.SetFloat("MoveSpeed", 1f);
     }
 }
