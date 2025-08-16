@@ -11,8 +11,8 @@ public class HitboxController : MonoBehaviour
         hitboxCollider = GetComponent<Collider>();
         if (hitboxCollider != null)
         {
-            hitboxCollider.isTrigger = true;
-            hitboxCollider.enabled = false; // Start with the hitbox disabled
+           // hitboxCollider.isTrigger = true;
+           // hitboxCollider.enabled = false; // Start with the hitbox disabled
         }
     }
 
@@ -20,7 +20,7 @@ public class HitboxController : MonoBehaviour
     {
         if (hitboxCollider != null)
         {
-            hitboxCollider.enabled = true;
+            //hitboxCollider.enabled = true;
         }
     }
 
@@ -28,7 +28,7 @@ public class HitboxController : MonoBehaviour
     {
         if (hitboxCollider != null)
         {
-            hitboxCollider.enabled = false;
+           //hitboxCollider.enabled = false;
         }
     }
 
