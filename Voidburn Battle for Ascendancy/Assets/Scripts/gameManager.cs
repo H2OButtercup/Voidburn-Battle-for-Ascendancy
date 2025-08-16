@@ -18,7 +18,7 @@ public class gameManager : MonoBehaviour
     [SerializeField] GameObject menuLose;
     [SerializeField] GameObject menuUnlocks;
     [SerializeField] GameObject menuTutorial;
-    [SerializeField] TMP_Text gameGoalCountText;
+    
 
 
     [Header("Player Display")]
@@ -36,7 +36,7 @@ public class gameManager : MonoBehaviour
     float timeScaleNew;
 
 
-    [Header("Player")]
+    [Header("Player1")]
     public GameObject playerPrefab;
     Transform playerSpawnPoint;
 
@@ -44,10 +44,11 @@ public class gameManager : MonoBehaviour
     public Transform keySpawnPoint;
     public GameObject keyPrefab;
 
-    [Header("Enemy")]
-    public GameObject enemyPrefab;
-    public int numberOfEnemiesToSpawn = 5;
-    private int gameGoalCount;
+    [Header("Player2")]
+    public GameObject playerPrefab2;
+    Transform playerSpawnPoint2;
+
+    private int gameGoalCount;//rounds won per watch
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -131,7 +132,7 @@ public class gameManager : MonoBehaviour
     public void updateGameGoal(int amount)
     {
         gameGoalCount += amount;
-        gameGoalCountText.text = gameGoalCount.ToString("F0");
+       
     }
 
 

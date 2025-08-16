@@ -5,6 +5,10 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class playerController : MonoBehaviour
 {
+    [Header("General Stats")]
+    public int Hp;
+
+
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
     public float dashSpeed = 10f;
@@ -349,4 +353,18 @@ public class playerController : MonoBehaviour
         Vector3 moveVector = new Vector3(0, verticalVelocity, 0);
         characterController.Move(moveVector * Time.deltaTime);
     }
+
+    void takeDamage(int damage)
+    {
+        Hp -= damage;
+    }
+    public bool groundedCheck()
+    {
+        if (isGrounded)
+            return true;
+        else return false;
+
+    }
+
+
 }
