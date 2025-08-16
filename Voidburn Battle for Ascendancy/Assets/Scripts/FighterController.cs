@@ -97,4 +97,22 @@ public class FighterController : MonoBehaviour
         }
         return false;
     }
+
+    public void SetKeys(KeyCode left, KeyCode right, KeyCode jump, KeyCode light, KeyCode heavy)
+    {
+        var leftField = typeof(FighterController).GetField("leftKey", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var rightField = typeof(FighterController).GetField("rightKey", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var jumpField = typeof(FighterController).GetField("jumpKey", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var lightField = typeof(FighterController).GetField("lightAttack", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+        var heavyField = typeof(FighterController).GetField("heavyAttack", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+        leftField?.SetValue(this, left);
+        rightField?.SetValue(this, right);
+        jumpField?.SetValue(this, jump);
+        lightField?.SetValue(this, light);
+        heavyField?.SetValue(this, heavy);
+    }
 }
+
+
+   
