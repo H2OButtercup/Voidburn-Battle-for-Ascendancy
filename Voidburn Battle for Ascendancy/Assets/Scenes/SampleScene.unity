@@ -997,57 +997,10 @@ GameObject:
   m_IsActive: 1
 --- !u!114 &533087565
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4122012288272508698, guid: 934d5c6e61be6ec4db0dae7c70888d27, type: 3}
+  m_PrefabInstance: {fileID: 6546423418493795555}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 533087563}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a076c17fe76165e4f8ed21498b877bf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Easing: 0
-  Modifiers: []
-  references:
-    version: 2
-    RefIds: []
---- !u!114 &533087566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 533087563}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f38bda98361e1de48a4ca2bd86ea3c17, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Composition:
-    ScreenPosition: {x: 0, y: 0}
-    DeadZone:
-      Enabled: 0
-      Size: {x: 0.2, y: 0.2}
-    HardLimits:
-      Enabled: 0
-      Size: {x: 0.8, y: 0.8}
-      Offset: {x: 0, y: 0}
-  CenterOnActivate: 1
-  TargetOffset: {x: 0, y: 0, z: 0}
-  Damping: {x: 0.5, y: 0.5}
-  Lookahead:
-    Enabled: 0
-    Time: 0
-    Smoothing: 0
-    IgnoreY: 0
---- !u!114 &533087568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 533087563}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
@@ -2294,14 +2247,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2118820577929135122, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
-      propertyPath: m_Avatar
-      value: 
-      objectReference: {fileID: 9000000, guid: b9a38aee213836a4ea4c2a245df2ad00, type: 3}
-    - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
-      propertyPath: rb
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6865230798340881654, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
       propertyPath: opponent
       value: 
@@ -2752,9 +2697,8 @@ Camera:
   m_StereoSeparation: 0.022
 --- !u!4 &1575171833
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 9088669001590852369, guid: 438e979cedf58bf4b8e56f9d031d4912, type: 3}
+  m_PrefabInstance: {fileID: 4872262846993022486}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575171829}
   serializedVersion: 2
@@ -3855,8 +3799,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 432111537}
   animator: {fileID: 2071788851}
+  characterController: {fileID: 2071788852}
   moveSpeed: 5
   reactionTime: 0.5
+  attackRange: 2
+  maxDistanceToPlayer: 10
+  analysisWindowSize: 5
+  jumpThreshold: 0.5
+  sidestepThreshold: 0.5
 --- !u!95 &2071788851
 Animator:
   serializedVersion: 7
@@ -3966,7 +3916,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1058907282}
-  - {fileID: 1575171833}
+  - {fileID: 9197872185750985317}
   - {fileID: 1338603632}
   - {fileID: 1017967586}
   - {fileID: 533087569}
