@@ -32,7 +32,7 @@ public class playerController : MonoBehaviour
     // Player State Machine
     private enum PlayerState
     {
-        Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching, Punching, Kicking, Attacking
+        Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching, Attacking
     }
     private PlayerState currentState = PlayerState.Idle;
 
