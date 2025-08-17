@@ -27,7 +27,7 @@ public class Platform : MonoBehaviour
             if (playerCollider == null) continue;
 
             playerController player = playerCollider.GetComponent<playerController>();
-            if(player != null && player.IsPressingDrop() && player.groundedCheck)
+            if(player != null && player.isPressingDrop() && player.groundedCheck())
             {
                 StartCoroutine(DisableCollision(playerCollider));
             }

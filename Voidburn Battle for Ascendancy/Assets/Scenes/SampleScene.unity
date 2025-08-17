@@ -984,9 +984,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 533087569}
-  - component: {fileID: 533087568}
   - component: {fileID: 533087570}
-  - component: {fileID: 533087566}
   - component: {fileID: 533087565}
   m_Layer: 0
   m_Name: FighterCam
@@ -997,10 +995,11 @@ GameObject:
   m_IsActive: 1
 --- !u!114 &533087565
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4122012288272508698, guid: 934d5c6e61be6ec4db0dae7c70888d27, type: 3}
-  m_PrefabInstance: {fileID: 6546423418493795555}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 533087563}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
@@ -1130,7 +1129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &553603027
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2697,8 +2696,9 @@ Camera:
   m_StereoSeparation: 0.022
 --- !u!4 &1575171833
 Transform:
-  m_CorrespondingSourceObject: {fileID: 9088669001590852369, guid: 438e979cedf58bf4b8e56f9d031d4912, type: 3}
-  m_PrefabInstance: {fileID: 4872262846993022486}
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1575171829}
   serializedVersion: 2
@@ -3762,7 +3762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 489b49dc4486a7040b2c4924c017014f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fighterCam: {fileID: 533087568}
+  fighterCam: {fileID: 0}
   minZoom: 6
   maxZoom: 12
 --- !u!4 &2038936042
@@ -3799,7 +3799,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 432111537}
   animator: {fileID: 2071788851}
-  characterController: {fileID: 2071788852}
+  characterController: {fileID: 0}
   moveSpeed: 5
   reactionTime: 0.5
   attackRange: 2
@@ -3916,9 +3916,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1058907282}
-  - {fileID: 9197872185750985317}
   - {fileID: 1338603632}
   - {fileID: 1017967586}
   - {fileID: 533087569}
   - {fileID: 2038936042}
   - {fileID: 576055264}
+  - {fileID: 1575171833}
