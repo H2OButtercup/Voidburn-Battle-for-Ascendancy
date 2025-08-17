@@ -89,12 +89,6 @@ public class playerController : MonoBehaviour
 
     private void HandleStateLogic()
     {
-        bool walkingForward = moveInput.x > 0.1f;
-        bool walkingBackward = moveInput.x < -0.1f;
-
-        animator.SetBool("IsWalkingForward", walkingForward);
-        animator.SetBool("IsWalkingBackward", walkingBackward);
-
         // One-shot actions (like a dash or sidestep) complete via their Coroutine.
         // We do not want to interrupt them with continuous movement logic.
         if (currentState == PlayerState.Dashing || currentState == PlayerState.Backdashing || currentState == PlayerState.Sidestepping)
@@ -212,6 +206,12 @@ public class playerController : MonoBehaviour
 
         Vector3 move = moveDirection * moveSpeed;
         characterController.Move(move * Time.deltaTime);
+
+        bool walkingForward = moveInput.x > 0.1f;
+        bool walkingBackward = moveInput.x < -0.1f;
+
+        animator.SetBool("IsWalkingForward", walkingForward);
+        animator.SetBool("IsWalkingBackward", walkingBackward);
     }
 
     private void TriggerDash()
@@ -227,7 +227,7 @@ public class playerController : MonoBehaviour
         if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
         currentActionCoroutine = StartCoroutine(DashRoutine(-dashSpeed));
         currentState = PlayerState.Backdashing;
-          animator.SetTrigger("Backdash");
+        animator.SetTrigger("Backdash");
     }
 
     private IEnumerator DashRoutine(float speed)
@@ -296,12 +296,12 @@ public class playerController : MonoBehaviour
 
     private void TryJump()
     {
-            if (characterController.isGrounded)
-            {
-                verticalVelocity = jumpForce;
-                animator.SetTrigger("Jump");
-                currentState = PlayerState.Jumping;
-            }
+        if (characterController.isGrounded)
+        {
+            verticalVelocity = jumpForce;
+            animator.SetTrigger("Jump");
+            currentState = PlayerState.Jumping;
+        }
     }
 
     private void TryCrouch()
@@ -379,14 +379,11 @@ public class playerController : MonoBehaviour
     {
         if (characterController.isGrounded)
         {
-            if (currentState == PlayerState.Jumping && verticalVelocity <= 0)
+            verticalVelocity = -2f;
+            if (currentState == PlayerState.Jumping)
             {
+                animator.SetTrigger("Land");
                 currentState = PlayerState.Idle;
-            }
-
-            if(verticalVelocity < 0)
-            {
-                verticalVelocity = -2f;
             }
         }
         else
@@ -395,7 +392,7 @@ public class playerController : MonoBehaviour
         }
 
         Vector3 moveVector = new Vector3(0, verticalVelocity, 0);
-        characterController.Move(moveVector * Time.deltaTime);
+        //characterController.Move(moveVector * Time.deltaTime);
     }
 
     void takeDamage(int damage)
