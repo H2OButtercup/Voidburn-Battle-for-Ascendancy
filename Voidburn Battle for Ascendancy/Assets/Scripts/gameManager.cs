@@ -11,21 +11,36 @@ using UnityEngine.UI;
 public class gameManager : MonoBehaviour
 {
     public static gameManager instance;
+    [Header("Menus")]
     [SerializeField] public GameObject menuActive;
-    [SerializeField] GameObject menuPause;
-    [SerializeField] GameObject menuLevelComplete;
-    [SerializeField] GameObject menuWin;
-    [SerializeField] GameObject menuLose;
-    [SerializeField] GameObject menuUnlocks;
-    [SerializeField] GameObject menuTutorial;
-    
+    [SerializeField] public GameObject menuPause;
+    [SerializeField] public GameObject menuLevelComplete;
+    [SerializeField] public GameObject menuWin;
+    [SerializeField] public GameObject menuLose;
+    [SerializeField] public GameObject menuUnlocks;
+    [SerializeField] public GameObject menuTutorial;
+    [SerializeField] public GameObject menuMoveList;
+    [SerializeField] public GameObject menuSettings;
 
+    public List<GameObject> menuScenes;
+
+    [Header("Settings' Sliders/Tracker")]
+    [SerializeField] SettingsTracker tracker;
+    [SerializeField] Slider mainVolume;
+    [SerializeField] Slider musicVolume;
+    [SerializeField] Slider effectVolume;
+    [SerializeField] Slider menuVolume;
 
     [Header("Player Display")]
-    public Image ammoBar;
-    public Image playerHPBar;
-    public Image playerStaminaBar;
-    public GameObject playerDamagePanel;
+    public Image playerOneHp;
+    public Image playerTwoHp;
+    public Image playerOneRoundOne;
+    public Image playerTwoRoundOne;
+    public Image playerOneRoundTwo;
+    public Image playerTwoRoundTwo;
+
+    
+    
 
     public bool isPaused;
     public GameObject player;
@@ -63,6 +78,8 @@ public class gameManager : MonoBehaviour
             playerSpawnPoint = spawnPointObj.transform;
         }
 
+       
+
         // Find the player at the correct spawn
         player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
@@ -87,22 +104,35 @@ public class gameManager : MonoBehaviour
     private void Start()
     {
         Time.timeScale = 1f;
+        //set the min and max volume for the setting sliders
+        mainVolume.minValue = 0;
+        mainVolume.maxValue = 100;
+        musicVolume.minValue = 0;
+        musicVolume.maxValue = 100;
+        effectVolume.minValue = 0;
+        effectVolume.maxValue = 100;
+        menuVolume.minValue = 0;
+        menuVolume.maxValue = 100;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Cancel"))
+        if (Input.GetButtonDown("Cancel") && menuScenes.Count == 0)
         {
             if (menuActive == null)
             {
-                statePause();
-                menuActive = menuPause;
+                statePause(); 
+                menuScenes.Add(menuPause);
+                menuActive = menuScenes.Last();
+               
                 menuActive.SetActive(true);
+                
             }
             else if (menuActive == menuPause || menuActive)
             {
+                menuScenes.Clear();
                 stateUnpause();
             }
         }
@@ -149,4 +179,14 @@ public class gameManager : MonoBehaviour
         menuActive = menuLevelComplete;
         menuActive.SetActive(true);
     }
+
+    public void applySettings()
+    {
+        tracker.MasterVol = mainVolume.value;
+        tracker.MusicVol  = musicVolume.value;
+        tracker.EffectVol = effectVolume.value;
+        tracker.MenuVol   = menuVolume.value;
+    }
+
+
 }
