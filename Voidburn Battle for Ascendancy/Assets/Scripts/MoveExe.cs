@@ -6,6 +6,7 @@ public class MoveExe : MonoBehaviour
     public List<KeyCode> inputbuffer = new List<KeyCode>();
     float lastInputTime;
     float inputBufferWindow;
+    private Animator myAnimator;
 
     private KeyCode[] validList =
         {
@@ -17,7 +18,7 @@ public class MoveExe : MonoBehaviour
 
     private void Start()
     {
-        
+        myAnimator = GetComponent<Animator>();
     }
 
 
@@ -33,11 +34,41 @@ public class MoveExe : MonoBehaviour
                     lastInputTime = Time.time;
                 }
             }
+
+            if(Time.time - lastInputTime > inputBufferWindow)
+            {
+                inputbuffer.Clear();
+            }
+
+            foreach(FightingMoves move in myMoves)
+            {
+                if(move.InputCheck(inputbuffer))
+                {
+                    playMove(move);
+                    inputbuffer.Clear();
+                    break;
+                }
+            }
+
         }
 
 
+        void playMove(FightingMoves move)
+        {
+            if (myAnimator != null && move.animation != null)
+            {
+                if (hasAnimationState(move.animation.name))
+                    myAnimator.Play(move.animation.name);
 
-
+                else
+                    Debug.LogError($"Missing Animation state");
+            }
+        }
+         bool hasAnimationState(string statename) 
+        {
+            return myAnimator.HasState(0,Animator.StringToHash(statename));
+        
+        }
 
 
 
