@@ -89,6 +89,12 @@ public class playerController : MonoBehaviour
 
     private void HandleStateLogic()
     {
+        bool walkingForward = moveInput.x > 0.1f;
+        bool walkingBackward = moveInput.x < -0.1f;
+
+        animator.SetBool("IsWalkingForward", walkingForward);
+        animator.SetBool("IsWalkingBackward", walkingBackward);
+
         // One-shot actions (like a dash or sidestep) complete via their Coroutine.
         // We do not want to interrupt them with continuous movement logic.
         if (currentState == PlayerState.Dashing || currentState == PlayerState.Backdashing || currentState == PlayerState.Sidestepping)
@@ -206,12 +212,6 @@ public class playerController : MonoBehaviour
 
         Vector3 move = moveDirection * moveSpeed;
         characterController.Move(move * Time.deltaTime);
-
-        bool walkingForward = moveInput.x > 0.1f;
-        bool walkingBackward = moveInput.x < -0.1f;
-
-        animator.SetBool("IsWalkingForward", walkingForward);
-        animator.SetBool("IsWalkingBackward", walkingBackward);
     }
 
     private void TriggerDash()
