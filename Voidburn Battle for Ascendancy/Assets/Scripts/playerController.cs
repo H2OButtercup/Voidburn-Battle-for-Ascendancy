@@ -28,6 +28,7 @@ public class playerController : MonoBehaviour
     [Header("References")]
     public Transform opponent;
     public Animator animator;
+    bool iscrouched;
 
     // Player State Machine
     private enum PlayerState
@@ -317,61 +318,60 @@ public class playerController : MonoBehaviour
     {
         currentState = PlayerState.Crouching;
         animator.SetTrigger("Crouch");
-
-        //float time = 0;
-        //float heightChange = originalHeight - crouchHeight;
-        //Vector3 originalPosition = transform.position;
+        iscrouched = true;
+        float time = 0;
+        float heightChange = originalHeight - crouchHeight;
+        Vector3 originalPosition = transform.position;
 
         //// Crouch Down
-        //while (time < 1f)
-        //{
-        //    float t = time / 1f;
-        //    characterController.height = Mathf.Lerp(originalHeight, crouchHeight, t);
-        //    characterController.center = new Vector3(characterController.center.x, Mathf.Lerp(originalCenterY, originalCenterY - heightChange / 2f, t), characterController.center.z);
-        //    transform.position = Vector3.Lerp(originalPosition, new Vector3(originalPosition.x, originalPosition.y - heightChange, originalPosition.z), t);
-        //    time += Time.deltaTime / crouchTransitionDuration;
-        //    yield return null;
-        //}
+        while (time < 1f)
+        {
+            float t = time / 1f;
+            characterController.height = Mathf.Lerp(originalHeight, crouchHeight, t);
+            characterController.center = new Vector3(characterController.center.x, Mathf.Lerp(originalCenterY, originalCenterY - heightChange / 2f, t), characterController.center.z);
+            transform.position = Vector3.Lerp(originalPosition, new Vector3(originalPosition.x, originalPosition.y - heightChange, originalPosition.z), t);
+            time += Time.deltaTime / crouchTransitionDuration;
+            yield return null;
+        }
 
         //// Snap to final values
-        //characterController.height = crouchHeight;
-        //characterController.center = new Vector3(characterController.center.x, originalCenterY - heightChange / 2f, characterController.center.z);
-        //transform.position = new Vector3(originalPosition.x, originalPosition.y - heightChange, originalPosition.z);
+        characterController.height = crouchHeight;
+        characterController.center = new Vector3(characterController.center.x, originalCenterY - heightChange / 2f, characterController.center.z);
+        transform.position = new Vector3(originalPosition.x, originalPosition.y - heightChange, originalPosition.z);
 
         //// Wait while the crouch is active
-        //while (moveInput.y < -0.8f && characterController.isGrounded)
-        //{
-        //    yield return null;
-        //}
+        while (moveInput.y < -0.8f && characterController.isGrounded)
+        {
+            yield return null;
+        }
 
         //// --- Un-Crouch ---
 
-        //// Check for a ceiling before standing up
-        //if (Physics.Raycast(transform.position, Vector3.up, originalHeight))
-        //{
-        //    // If there's a ceiling, stay crouched
-        //    currentState = PlayerState.Idle;
-        //    yield break;
-        //}
+        /// Check for a ceiling before standing up
+        if (Physics.Raycast(transform.position, Vector3.up, originalHeight))
+        {
+            // If there's a ceiling, stay crouched
+           currentState = PlayerState.Idle;
+       }
 
         animator.SetTrigger("UnCrouch");
-
-        //time = 0;
-        //Vector3 crouchedPosition = transform.position;
+        iscrouched = false;
+       time = 0;
+        Vector3 crouchedPosition = transform.position;
 
         //while (time < 1f)
-        //{
-        //    float t = time / 1f;
-        //    characterController.height = Mathf.Lerp(crouchHeight, originalHeight, t);
-        //    characterController.center = new Vector3(characterController.center.x, Mathf.Lerp(originalCenterY - heightChange / 2f, originalCenterY, t), characterController.center.z);
-        //    transform.position = Vector3.Lerp(crouchedPosition, originalPosition, t);
-        //    time += Time.deltaTime / crouchTransitionDuration;
+        {
+            float t = time / 1f;
+            characterController.height = Mathf.Lerp(crouchHeight, originalHeight, t);
+            characterController.center = new Vector3(characterController.center.x, Mathf.Lerp(originalCenterY - heightChange / 2f, originalCenterY, t), characterController.center.z);
+            transform.position = Vector3.Lerp(crouchedPosition, originalPosition, t);
+            time += Time.deltaTime / crouchTransitionDuration;
             yield return null;
-        //}
+        }
 
-        //characterController.height = originalHeight;
-        //characterController.center = new Vector3(characterController.center.x, originalCenterY, characterController.center.z);
-        //transform.position = originalPosition;
+        characterController.height = originalHeight;
+        characterController.center = new Vector3(characterController.center.x, originalCenterY, characterController.center.z);
+        transform.position = originalPosition;
         currentState = PlayerState.Idle;
     }
 
@@ -392,20 +392,27 @@ public class playerController : MonoBehaviour
         }
 
         Vector3 moveVector = new Vector3(0, verticalVelocity, 0);
-        //characterController.Move(moveVector * Time.deltaTime);
+        characterController.Move(moveVector * Time.deltaTime);
     }
 
     void takeDamage(int damage)
     {
         Hp -= damage;
     }
-    //public bool groundedCheck()
-    //{
-    //    if (isGrounded)
-    //        return true;
-    //    else return false;
+    public bool groundedCheck()
+    {
+        if (characterController.isGrounded)
+            return true;
+        else return false;
 
-    //}
+    }
 
+    public bool isPressingDrop()
+    {
+        if(iscrouched == true && Input.GetButtonDown("Jump"))
+            return true;
+        else
+            return false;
+    }
 
 }
