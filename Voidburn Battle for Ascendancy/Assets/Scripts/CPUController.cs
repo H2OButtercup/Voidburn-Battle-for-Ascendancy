@@ -41,10 +41,10 @@ public class CPUController : MonoBehaviour
         playerActionHistory = new Queue<PlayerAction>();
 
         // Ensure we have all necessary components
-        if (!characterController)
-        {
-            Debug.LogError("CharacterController not assigned on CPUController.");
-        }
+        //if (!characterController)
+        //{
+        //    Debug.LogError("CharacterController not assigned on CPUController.");
+        //}
     }
 
     private void Update()
