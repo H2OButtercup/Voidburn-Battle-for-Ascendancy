@@ -3,8 +3,8 @@ using UnityEngine;
 [CreateAssetMenu]
 public class SettingsTracker : ScriptableObject
 {
-    int MasterVol;
-    int MusicVol;
-    int EffectVol;
-    int MenuVol;
+    public float MasterVol;
+    public float MusicVol;
+    public float EffectVol;
+    public float MenuVol;
 }
