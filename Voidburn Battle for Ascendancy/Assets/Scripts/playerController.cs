@@ -28,6 +28,7 @@ public class playerController : MonoBehaviour
     [Header("References")]
     public Transform opponent;
     public Animator animator;
+    bool iscrouched;
 
     [Header("Audio Settings")]
     public AudioSource audSource;
@@ -230,7 +231,7 @@ public class playerController : MonoBehaviour
         if (currentActionCoroutine != null) StopCoroutine(currentActionCoroutine);
         currentActionCoroutine = StartCoroutine(DashRoutine(-dashSpeed));
         currentState = PlayerState.Backdashing;
-          animator.SetTrigger("Backdash");
+        animator.SetTrigger("Backdash");
     }
 
     private IEnumerator DashRoutine(float speed)
@@ -299,12 +300,12 @@ public class playerController : MonoBehaviour
 
     private void TryJump()
     {
-            if (characterController.isGrounded)
-            {
-                verticalVelocity = jumpForce;
-                animator.SetTrigger("Jump");
-                currentState = PlayerState.Jumping;
-            }
+        if (characterController.isGrounded)
+        {
+            verticalVelocity = jumpForce;
+            animator.SetTrigger("Jump");
+            currentState = PlayerState.Jumping;
+        }
     }
 
     private void TryCrouch()
@@ -320,12 +321,12 @@ public class playerController : MonoBehaviour
     {
         currentState = PlayerState.Crouching;
         animator.SetTrigger("Crouch");
-
+        iscrouched = true;
         float time = 0;
         float heightChange = originalHeight - crouchHeight;
         Vector3 originalPosition = transform.position;
 
-        // Crouch Down
+        //// Crouch Down
         while (time < 1f)
         {
             float t = time / 1f;
@@ -336,33 +337,32 @@ public class playerController : MonoBehaviour
             yield return null;
         }
 
-        // Snap to final values
+        //// Snap to final values
         characterController.height = crouchHeight;
         characterController.center = new Vector3(characterController.center.x, originalCenterY - heightChange / 2f, characterController.center.z);
         transform.position = new Vector3(originalPosition.x, originalPosition.y - heightChange, originalPosition.z);
 
-        // Wait while the crouch is active
+        //// Wait while the crouch is active
         while (moveInput.y < -0.8f && characterController.isGrounded)
         {
             yield return null;
         }
 
-        // --- Un-Crouch ---
+        //// --- Un-Crouch ---
 
-        // Check for a ceiling before standing up
+        /// Check for a ceiling before standing up
         if (Physics.Raycast(transform.position, Vector3.up, originalHeight))
         {
             // If there's a ceiling, stay crouched
-            currentState = PlayerState.Idle;
-            yield break;
-        }
+           currentState = PlayerState.Idle;
+       }
 
         animator.SetTrigger("UnCrouch");
-
-        time = 0;
+        iscrouched = false;
+       time = 0;
         Vector3 crouchedPosition = transform.position;
 
-        while (time < 1f)
+        //while (time < 1f)
         {
             float t = time / 1f;
             characterController.height = Mathf.Lerp(crouchHeight, originalHeight, t);
@@ -382,14 +382,11 @@ public class playerController : MonoBehaviour
     {
         if (characterController.isGrounded)
         {
-            if (currentState == PlayerState.Jumping && verticalVelocity <= 0)
+            verticalVelocity = -2f;
+            if (currentState == PlayerState.Jumping)
             {
+                animator.SetTrigger("Land");
                 currentState = PlayerState.Idle;
-            }
-
-            if(verticalVelocity < 0)
-            {
-                verticalVelocity = -2f;
             }
         }
         else
@@ -405,13 +402,20 @@ public class playerController : MonoBehaviour
     {
         Hp -= damage;
     }
-    //public bool groundedCheck()
-    //{
-    //    if (isGrounded)
-    //        return true;
-    //    else return false;
+    public bool groundedCheck()
+    {
+        if (characterController.isGrounded)
+            return true;
+        else return false;
 
-    //}
+    }
 
+    public bool isPressingDrop()
+    {
+        if(iscrouched == true && Input.GetButtonDown("Jump"))
+            return true;
+        else
+            return false;
+    }
 
 }
