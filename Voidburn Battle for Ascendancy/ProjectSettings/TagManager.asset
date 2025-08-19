@@ -7,18 +7,16 @@ TagManager:
   - Player1
   - Player2
   - Ground
-  tags: []
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
   - Floor
-  - Ground
   - Water
   - UI
+  - 
   - Ground
   - Ignore Layer
-  - 
   - 
   - 
   - 

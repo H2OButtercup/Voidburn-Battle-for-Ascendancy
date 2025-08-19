@@ -10,16 +10,16 @@ public class playerController : MonoBehaviour
 
 
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float dashSpeed = 10f;
-    public float dashDuration = 0.2f;
-    public float jumpForce = 7f;
-    public float sideStepDistance = 2f;
-    public float sideWalkSpeed = 3f;
-    public float rotationSpeed = 5f;
-    public float tapThreshold = 0.3f;
-    public float crouchHeight = 1f;
-    public float crouchTransitionDuration = 0.15f;
+    public float moveSpeed;
+    public float dashSpeed;
+    public float dashDuration;
+    public float jumpForce;
+    public float sideStepDistance;
+    public float sideWalkSpeed;
+    public float rotationSpeed;
+    public float tapThreshold;
+    public float crouchHeight;
+    public float crouchTransitionDuration;
 
     [Header("Combat Settings")]
     [Tooltip("Links input actions to specific hitboxes and animations.")]
@@ -38,17 +38,17 @@ public class playerController : MonoBehaviour
     {
         Idle, Walking, Dashing, Backdashing, Sidestepping, Sidewalking, Jumping, Crouching, Attacking
     }
-    private PlayerState currentState = PlayerState.Idle;
+    private PlayerState currentState;
 
     // Input System & State
     private PlayerControls controls;
     private CharacterController characterController;
     private Vector2 moveInput;
-    private float verticalVelocity = 0f;
+    private float verticalVelocity;
 
     // Tap detection
-    private float lastHorizontalTapTime = -1f;
-    private float lastVerticalTapTime = -1f;
+    private float lastHorizontalTapTime;
+    private float lastVerticalTapTime;
 
     // CharacterController dimensions
     private float originalHeight;
@@ -120,7 +120,7 @@ public class playerController : MonoBehaviour
         else
         {
             // Only go to Idle if no movement input is detected
-            if (currentState != PlayerState.Crouching && currentState != PlayerState.Jumping)
+            if (currentState == PlayerState.Crouching && currentState == PlayerState.Jumping)
             {
                 currentState = PlayerState.Idle;
             }
