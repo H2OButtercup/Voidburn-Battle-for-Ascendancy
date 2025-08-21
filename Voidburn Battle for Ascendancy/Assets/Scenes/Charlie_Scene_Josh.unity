@@ -858,6 +858,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9ef3c588eeb1a224d8eac87247994383, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1197812520}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 9ef3c588eeb1a224d8eac87247994383, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1197812523}
   m_SourcePrefab: {fileID: 100100000, guid: 9ef3c588eeb1a224d8eac87247994383, type: 3}
 --- !u!1001 &339241129
 PrefabInstance:
@@ -2063,8 +2066,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1197812519}
-  animator: {fileID: 0}
-  characterController: {fileID: 0}
+  animator: {fileID: 1851889802}
+  characterController: {fileID: 1851889803}
   moveSpeed: 5
   reactionTime: 0.5
   attackRange: 2
@@ -2361,8 +2364,31 @@ MonoBehaviour:
   crouchHeight: 1
   crouchTransitionDuration: 0.15
   attackHitboxes: []
-  opponent: {fileID: 0}
-  animator: {fileID: 0}
+  opponent: {fileID: 1851889801}
+  animator: {fileID: 1197812523}
+  audSource: {fileID: 1197812520}
+--- !u!95 &1197812523
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197812515}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 8595e0a7f8893ba46acdf8019eb5a8bf, type: 3}
+  m_Controller: {fileID: 9100000, guid: 24a9ccbb17d77f040b89e09ddcc233d8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1337021494
 GameObject:
   m_ObjectHideFlags: 0
@@ -3000,6 +3026,21 @@ PrefabInstance:
       insertIndex: 2
       addedObject: {fileID: 1161338485}
   m_SourcePrefab: {fileID: 100100000, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+--- !u!4 &1851889801 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8431687675945969230, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+  m_PrefabInstance: {fileID: 1851889800}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1851889802 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2118820577929135122, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+  m_PrefabInstance: {fileID: 1851889800}
+  m_PrefabAsset: {fileID: 0}
+--- !u!143 &1851889803 stripped
+CharacterController:
+  m_CorrespondingSourceObject: {fileID: 7094772783124928087, guid: 162c3270ea55d5b4bb1f0859d317bcc2, type: 3}
+  m_PrefabInstance: {fileID: 1851889800}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1935259586
 PrefabInstance:
   m_ObjectHideFlags: 0
