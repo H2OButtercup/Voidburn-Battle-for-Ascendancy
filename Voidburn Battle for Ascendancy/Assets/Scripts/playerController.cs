@@ -48,7 +48,7 @@ public class playerController : MonoBehaviour
     // Input System & State
     private PlayerControls controls;
     private CharacterController characterController;
-    private Vector2 moveInput;
+    private Vector3 moveInput;
     private float verticalVelocity;
 
     // Tap detection
@@ -100,9 +100,14 @@ public class playerController : MonoBehaviour
     {
         bool walkingForward = moveInput.x > 0.1f;
         bool walkingBackward = moveInput.x < -0.1f;
+        bool walkingLeft = moveInput.y > 0.1f;
+        bool walkingRight = moveInput.y < -0.1f;
 
+        animator.SetBool("IsSideWalkingLeft", walkingLeft);
+        animator.SetBool("IsSideWalkingRight", walkingRight);
         animator.SetBool("IsWalkingForward", walkingForward);
         animator.SetBool("IsWalkingBackward", walkingBackward);
+       
 
         // One-shot actions (like a dash or sidestep) complete via their Coroutine.
         // We do not want to interrupt them with continuous movement logic.
