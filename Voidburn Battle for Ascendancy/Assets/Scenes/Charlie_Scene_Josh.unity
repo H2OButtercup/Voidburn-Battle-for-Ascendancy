@@ -2352,7 +2352,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fa258bb29bebb24d83bee431674f83c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hp: 0
+  Hp: 45
   moveSpeed: 5
   dashSpeed: 10
   dashDuration: 0.2
@@ -2367,6 +2367,7 @@ MonoBehaviour:
   opponent: {fileID: 1851889801}
   animator: {fileID: 1197812523}
   audSource: {fileID: 1197812520}
+  inputActioner: {fileID: 0}
 --- !u!95 &1197812523
 Animator:
   serializedVersion: 7
