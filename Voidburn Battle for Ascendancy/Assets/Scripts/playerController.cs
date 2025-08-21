@@ -33,6 +33,11 @@ public class playerController : MonoBehaviour
     [Header("Audio Settings")]
     public AudioSource audSource;
 
+    [Header("Player Input Settings")]
+    public InputActionAsset inputActioner;
+    private InputAction jumpAction;
+    private InputAction crouchAction;
+
     // Player State Machine
     private enum PlayerState
     {
@@ -193,9 +198,11 @@ public class playerController : MonoBehaviour
             // Single-tap vertical for Jump/Crouch
             else
             {
-                if (moveInput.y > 0 && characterController.isGrounded)
+                jumpAction = inputActioner.FindAction("Jump");
+                crouchAction = inputActioner.FindAction("Crouch");
+                if (/*moveInput.y > 0*/ jumpAction.WasPressedThisFrame() && characterController.isGrounded)
                     TryJump(); // up
-                else if (moveInput.y < 0 && characterController.isGrounded)
+                else if (/*moveInput.y*/ crouchAction.IsPressed() /*< 0*/ && characterController.isGrounded)
                     TryCrouch(); // down
             }
         }
